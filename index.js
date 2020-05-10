@@ -1,7 +1,9 @@
 const express = require('express')
+const morgan = require('morgan')
 const app = express()
-
+app.use(morgan('tiny'))
 app.use(express.json())
+
 
 let persons = [
     { 
@@ -52,30 +54,25 @@ app.delete('/api/persons/:id', (request, response) => {
 
 const generateId = () => {
 	const id = Math.floor(Math.random() * 1000000000)
-	console.log(id)
 	return id
 }
 
 app.post('/api/persons', (request, response) => {
-	console.log("POST request received")
 	const body = request.body
 
 	if (persons.find(person => person.name === body.name)) {
-		console.log("non-unigue name")
 		return response.status(400).json({
 			error: 'name must be unique'
 		})
 	}
 
 	if (!body.name) {
-		console.log("name missing")
 		return response.status(400).json({
 			error: 'name missing'
 		})
 	}
 	
 	if (!body.number) {
-		console.log("number missing")
 		return response.status(400).json({
 			error: 'number missing'
 		})
@@ -87,7 +84,6 @@ app.post('/api/persons', (request, response) => {
 		number: body.number,
 		id: generateId(),
 	}
-	console.log(person)
 	persons = persons.concat(person)
 	response.json(person)
 })

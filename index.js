@@ -46,10 +46,28 @@ app.get('/api/persons/:id', (request, response) => {
 
 app.delete('/api/persons/:id', (request, response) => {
 	const id = Number(request.params.id)
-	console.log(id)
 	persons = persons.filter(person => person.id !== id)
-	console.log(persons)
 	response.status(204).end()
+})
+
+const generateId = () => {
+	const id = Math.floor(Math.random() * 1000000000)
+	console.log(id)
+	return id
+}
+
+app.post('/api/persons', (request, response) => {
+	console.log("POST request received")
+	const body = request.body
+	console.log(body)
+	const person = {
+		name: body.name,
+		number: body.number,
+		id: generateId(),
+	}
+	console.log(person)
+	persons = persons.concat(person)
+	response.json(person)
 })
 
 

@@ -47,30 +47,39 @@ const generateId = () => {
 app.post('/api/persons', (request, response) => {
 	const body = request.body
 
-	if (persons.find(person => person.name === body.name)) {
-		return response.status(400).json({
-			error: 'name must be unique'
-		})
-	}
-
-	if (!body.name) {
+	// if (Contact.findOne({ name: body.name})
+	// 		.then(contact =>{
+	// 			console.log(typeof(contact))
+	// 			console.log(contact !== null)
+	// 			return(contact === null)
+	// 		})
+	// 	){
+	// 		return response.status(400).json({
+	// 			error: 'name must be unique'
+	// 		})
+	// 	}
+	
+	if (!body.name) { 
 		return response.status(400).json({
 			error: 'name missing'
 		})
 	}
 	
 	if (!body.number) {
-		return response.status(400).json({
-			error: 'number missing'
-		})
+	 	return response.status(400).json({
+	 		error: 'number missing'
+	 	})
 	}
-	const person = {
+	
+	const contact = new Contact({
 		name: body.name,
 		number: body.number,
-		id: generateId(),
-	}
-	persons = persons.concat(person)
-	response.json(person)
+	})
+	
+	contact.save().then(savedContact => {
+		response.json(savedContact)
+	})
+
 })
 
 

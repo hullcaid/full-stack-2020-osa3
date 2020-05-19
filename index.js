@@ -46,20 +46,8 @@ app.delete('/api/persons/:id', (request, response, next) => {
 		.catch(error => next(error))
 })
 
-app.post('/api/persons', (request, response) => {
+app.post('/api/persons', (request, response, next) => {
 	const body = request.body
-
-	// if (Contact.findOne({ name: body.name})
-	// 		.then(contact =>{
-	// 			console.log(typeof(contact))
-	// 			console.log(contact !== null)
-	// 			return(contact === null)
-	// 		})
-	// 	){
-	// 		return response.status(400).json({
-	// 			error: 'name must be unique'
-	// 		})
-	// 	}
 	
 	if (!body.name) { 
 		return response.status(400).json({
@@ -81,6 +69,7 @@ app.post('/api/persons', (request, response) => {
 	contact.save().then(savedContact => {
 		response.json(savedContact)
 	})
+	.catch(error => next(error))
 
 })
 
@@ -108,6 +97,8 @@ const errorHandler = (error, request, response, next) => {
 
 	if (error.name === 'CastError') {
 		return response.status(400).send({ error: 'id in wrong format' })
+	} else if (error.name === 'ValidationError') {
+		return response.status(400).json({ error: error.message })
 	}
 	next(error)
 }
